@@ -12,22 +12,29 @@ public class Pessoa {
         this.cpf = cpf;
     }
 
-    //Método Da Classe
+    // --- MÉTODOS GETTERS ---
 
-    // Método para exibir os dados
-    public void exibirDados() {
-        System.out.println("ID: " + this.id);
-        System.out.println("Nome: " + this.nome);
-        System.out.println("Idade: " + this.idade);
-        System.out.println("Cpf: " + this.cpf);
+    public int getId() {
+        return id;
     }
 
     public String getNome() {
-        return this.nome;
+        return nome;
     }
 
+    public int getIdade() {
+        return idade;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    //Método Da Classe
+
+
     // Método para verificar se a pessoa é maior de idade
-    public boolean verificadorMaioridade() {
+    public boolean verificarMaioridade() {
         return this.idade >= 18;
     }
 
@@ -35,5 +42,4 @@ public class Pessoa {
     public void atualizarIdade(int novaIdade) {
         this.idade = novaIdade;
     }
-
 }

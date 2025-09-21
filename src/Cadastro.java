@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -26,7 +27,7 @@ public class Cadastro {
 
             if (cpf.matches("\\d{11}")) { // Verifica se contém exatamente 11 dígitos
                 // Formata o CPF: xxx.xxx.xxx-xx
-                return  String.format("%s.%s.%s.-%s",
+                return  String.format("%s.%s.%s-%s",
                     cpf.substring(0, 3), cpf.substring(3, 6),
                     cpf.substring(6, 9), cpf.substring(9, 11));
             }
@@ -76,99 +77,142 @@ public class Cadastro {
         }
     }
 
-    public static void main(String[] args) {
+    private  static void adicionarCadastro(Scanner leitor, ArrayList<Pessoa> pessoas, ArrayList<Carro> carros) {
         
-        try (Scanner leitor = new Scanner(System.in)) {
-            Pessoa[] pessoas = new Pessoa[10];
-            Carro[] carros = new Carro[10];
-            int indice = 0;
+           System.out.println("\n-> Iniciando novo cadastro (ID: " + (pessoas.size() + 1) + ")");
+        System.out.println("   (Digite 'exit' a qualquer momento para cancelar)");
 
-            boolean programaRodando = true;
-            
-            System.out.println("--- Sistema de Cadastro ---");
-            
-            while (indice < 10 && programaRodando) {
-                boolean dadosCorretos = false; // Variável de controle para o loop de correção
-                
-                // Loop para repetir o cadastro em caso de erro
-                do{
-                    System.out.println("\n-> Iniciando cadastro (ID: " + (indice + 1) + ")");
-                    System.out.println("(Digite 'exit' a qualquer momento para encerrar)");
-                    
-                    // --- Coleta de dados da Pessoa ---
-                   String nomePessoa = lerStringNaoVazia(leitor, "Nome da pessoa: ");
-                if (nomePessoa.equalsIgnoreCase("exit")) { programaRodando = false; break; }
+        String nomePessoa = lerStringNaoVazia(leitor, "Nome da pessoa: ");
+        if (nomePessoa.equalsIgnoreCase("exit")) { System.out.println("Cadastro cancelado."); return; }
 
-                int idadePessoa = lerInt(leitor, "Idade da pessoa: ");
+        int idadePessoa = lerInt(leitor, "Idade da pessoa: ");
 
-                String cpfFormatado = lerCpf(leitor);
-                if (cpfFormatado.equalsIgnoreCase("exit")) { programaRodando = false; break; }
+        String cpfFormatado = lerCpf(leitor);
+        if (cpfFormatado.equalsIgnoreCase("exit")) { System.out.println("Cadastro cancelado."); return; }
 
-                String modeloCarro = lerStringNaoVazia(leitor, "Modelo do carro: ");
-                if (modeloCarro.equalsIgnoreCase("exit")) { programaRodando = false; break; }
-                
-                int anoCarro = lerInt(leitor, "Ano do carro: ");
+        String modeloCarro = lerStringNaoVazia(leitor, "Modelo do carro: ");
+        if (modeloCarro.equalsIgnoreCase("exit")) { System.out.println("Cadastro cancelado."); return; }
+        
+        int anoCarro = lerInt(leitor, "Ano do carro: ");
 
-                String placaCarro = lerPlaca(leitor);
-                if (placaCarro.equalsIgnoreCase("exit")) { programaRodando = false; break; }
+        String placaCarro = lerPlaca(leitor);
+        if (placaCarro.equalsIgnoreCase("exit")) { System.out.println("Cadastro cancelado."); return; }
 
-                String renavamCarro = lerRenavam(leitor);
-                if (renavamCarro.equalsIgnoreCase("exit")) { programaRodando = false; break; }
-                    
-                    // --- Verificação ---
-                    System.out.println("\n--- Por favor, confirme os dados inserido ---");
-                    System.out.println("Pessoa: " + nomePessoa + ", " + idadePessoa + " anos, CPF: " + cpfFormatado);
-                    System.out.println("Carro: " + modeloCarro + ", ano " + anoCarro);
-                    System.out.println("As informações estão corretas? (S para Sim / N para Não): ");
-                    
-                    String confirmacao = leitor.nextLine();
-                    
-                    if (confirmacao.equalsIgnoreCase("S")) {
-                        // Se estiver correto, cria os objetos e armazena
-                        pessoas[indice] = new Pessoa(indice + 1, nomePessoa, idadePessoa, cpfFormatado);
-                        carros[indice] = new Carro(renavamCarro, placaCarro, modeloCarro, anoCarro);
-                        dadosCorretos = true; // Sinaliza que os dados estão corretos para sair do loop
-                        System.out.println("Cadastro salvo com sucesso!");
-                    } else {
-                        System.out.println("\nOK, vamos tentar novamente. Por favor, insira os dados mais uma vez.");
-                        // Se estiver incorreto, o loop 'do-while' vai repetir
-                    }
-                } while (!dadosCorretos); // O loop continua enquanto 'dadosCorretos' for falso
-                
-                if (!programaRodando) {
-                    break;
-                }
-                
-                indice++; // Só avança para o próximo índice se o cadastro foi salvo com sucesso
-            }
-            
-            // --- Exibição Final dos Dados ---
-            System.out.println("\n=============================================");
-            System.out.println("--- RELATÓRIO DE DADOS CADASTRADOS ---");
-            System.out.println("=============================================");
-            
-            for (int i = 0; i < indice; i++){
-                System.out.println("\n--- Cadastro ---");
-                
-                // Exibindo dados da pessoa
-                System.out.println("Dados da Pessoa:");
-                pessoas[i].exibirDados();
-                if (pessoas[i].verificadorMaioridade()) {
-                    System.out.println("Status: É maior de idade.");
-                } else {
-                    System.out.println("Status: É menor de idade.");
-                }
-                
-                System.out.println("\nDados do Carro:");
-                carros[i].exibirDados();
-                if (carros[i].verificarCarroAntigo()){
-                    System.out.println("Status: Este é um carro antigo.");
-                } else {
-                    System.out.println("Status: Este não é um carro antigo.");
-                }
-            }
-            
-            System.out.println("\nFim do Programa.");
+        String renavamCarro = lerRenavam(leitor);
+        if (renavamCarro.equalsIgnoreCase("exit")) { System.out.println("Cadastro cancelado."); return; }
+
+        System.out.println("\n--- Por favor, confirme os dados ---");
+        System.out.println("  Pessoa: " + nomePessoa + ", " + idadePessoa + " anos, CPF: " + cpfFormatado);
+        System.out.println("  Carro: " + modeloCarro + ", ano " + anoCarro + ", Placa: " + placaCarro);
+        System.out.print("As informações estão corretas? (S para Sim / N para Não): ");
+        String confirmacao = leitor.nextLine();
+
+        if (confirmacao.equalsIgnoreCase("S")) {
+            int novoId = pessoas.size() + 1;
+            pessoas.add(new Pessoa(novoId, nomePessoa, idadePessoa, cpfFormatado));
+            carros.add(new Carro(renavamCarro, placaCarro, modeloCarro, anoCarro));
+            System.out.println("Cadastro salvo com sucesso!");
+        } else {
+            System.out.println("\nOk, cadastro descartado.");
         }
     }
+            
+            // --- Exibição Final dos Dados ---
+            private static  void exibirRelatorio(ArrayList<Pessoa> pessoas, ArrayList<Carro> carros) {
+                System.out.println("\n=============================================");
+                System.out.println("--- RELATÓRIO DE DADOS CADASTRADOS ---");
+                System.out.println("=============================================");
+
+                if (!pessoas.isEmpty()) {
+                    String[] cabecalhos = {"ID", "NOME", "IDADE", "CPF", "STATUS IDADE", "MODELO", "ANO", "PLACA", "RENANAM", "STATUS CARRO"};
+                    int[] larguras = new int[cabecalhos.length];
+
+                    for (int i = 0; i < cabecalhos.length; i++) {
+                    larguras[i] = cabecalhos[i].length();
+                    }
+
+                    for (int i = 0; i < pessoas.size(); i++) {
+                    Pessoa p = pessoas.get(i);
+                    Carro c = carros.get(i);
+
+                    larguras[0] = Math.max(larguras[0], String.valueOf(p.getId()).length());
+                    larguras[1] = Math.max(larguras[1], p.getNome().length());
+                    larguras[2] = Math.max(larguras[2], String.valueOf(p.getIdade()).length());
+                    larguras[3] = Math.max(larguras[3], p.getCpf().length());
+                    larguras[4] = Math.max(larguras[4], (p.verificarMaioridade() ? "Maior de Idade" : "Menor de Idade").length());
+                    larguras[5] = Math.max(larguras[5], c.getModelo().length());
+                    larguras[6] = Math.max(larguras[6], String.valueOf(c.getAno()).length());
+                    larguras[7] = Math.max(larguras[7], c.getPlaca().length());
+                    larguras[8] = Math.max(larguras[8], c.getRenavam().length());
+                    larguras[9] = Math.max(larguras[9], (c.verificarCarroAntigo() ? "Antigo" : "Regular").length());
+                    }
+
+                    StringBuilder formato = new StringBuilder();
+                    for (int largura : larguras) {
+                        formato.append("| %-").append(largura).append("s ");
+                }
+                formato.append("|\n");
+
+                StringBuilder linhaSeparadora = new StringBuilder();
+                for (int largura : larguras) {
+                    linhaSeparadora.append("+");
+                    for (int i = 0; i < largura + 2; i++){
+                        linhaSeparadora.append("-");
+                    }
+                }
+                linhaSeparadora.append("+\n");
+
+                System.out.print(linhaSeparadora);
+                System.out.printf(formato.toString(), (Object[]) cabecalhos);
+                System.out.print(linhaSeparadora);
+
+                for (int i = 0; i < pessoas.size(); i++) {
+                    Pessoa p = pessoas.get(i);
+                    Carro c = carros.get(i);
+
+                    String statusIdade = p.verificarMaioridade() ? "Maior de idade":"Menor de idade";
+                    String statusCarro = c.verificarCarroAntigo() ? "Antigo" : "Regular";
+
+                    System.out.printf(formato.toString(), 
+                        p.getId(), p.getNome(), p.getIdade(), p.getCpf(), statusIdade, 
+                        c.getModelo(), c.getAno(), c.getPlaca(), c.getRenavam(), statusCarro);
+                    }
+                    System.out.print(linhaSeparadora);
+                } else {
+                    System.err.println("Nenhum dado foi cadastrado.");
+                }
+            }
+
+            // --- MÉTODO PRINCIPAL COM A ESTRUTURA DE MENU ---
+            public static void main(String[] args) {
+                try (Scanner leitor = new Scanner(System.in)) {
+                    ArrayList<Pessoa> pessoas = new ArrayList<>(); 
+                    ArrayList<Carro> carros = new ArrayList<>();
+                    String escolha;
+
+                    do {
+                        System.out.println("\n--- MENU PRINCIPAL ---");
+                        System.out.println("1 - Adicionar Novo Cadastro");
+                        System.out.println("2 - Listar Todos os Cadastros");
+                        System.out.println("3 - Sair");
+                        System.out.println("Escolha uma opção: ");
+                        escolha = leitor.nextLine();
+
+                        switch (escolha) {
+                            case "1":
+                                adicionarCadastro(leitor, pessoas, carros);
+                                break;
+                            case "2":
+                                exibirRelatorio(pessoas, carros);
+                                break;
+                            case "3":
+                                System.out.println("Encerrando o programa...");
+                                break;
+                            default:
+                            System.out.println("Erro: Opção inválida. Por favor, tente novamente.");   
+                        }
+                    } while (!escolha.equals("3"));
+                }
+                System.out.println("\nFim do programa.");
+            }    
 }

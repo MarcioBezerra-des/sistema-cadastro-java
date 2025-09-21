@@ -14,16 +14,28 @@ public class Carro {
         this.ano = ano;
     }
 
+    public String getRenavam() {
+        return renavam;
+    }
+
+    public String getPlaca() {
+        return placa;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public int getAno() {
+        return ano;
+    }
+
     //Método Da Classe
     public void exibirDados() {
         System.out.println("Modelo: " + this.modelo);
         System.out.println("Ano " + this.ano);
         System.out.println("Placa: " + this.placa);
         System.out.println("Renavam: " + this.renavam);
-    }
-
-    public String getModelo() {
-        return this.modelo;
     }
 
     public boolean verificarCarroAntigo() {
