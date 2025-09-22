@@ -7,7 +7,7 @@ O principal objetivo deste projeto é a aplicação prática de conceitos avanç
 
 Status do Projeto: `Em Desenvolvimento` (Arquitetura de camadas implementada).
 
-## **Funcionalidades da Versão Atual (v1.0)**
+## **Funcionalidades da Versão Atual (v2.0)**
 
 * **Arquitetura em Camadas**: O código é organizado em pacotes (`model`, `service`) para garantir a separação de responsabilidades e a manutenibilidade.
 * **Menu Interativo**: A aplicação é controlada por um menu principal no console, oferecendo uma experiência de usuário clara e objetiva.
