@@ -1,5 +1,6 @@
 package main.oficinmaster;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -67,12 +68,43 @@ public class OficinaMasterApplication {
         List<Cliente> clientes = clienteService.listarTodos();
         if (clientes.isEmpty()) {
             System.out.println("Nenhum cliente cadastrado.");
-        } else {
-            for (Cliente cliente : clientes) {
-                System.out.println(cliente.toString());
-            }
+            return;
         }
+
+       String[] cabecalhos = {"ID", "NOME COMPLETO", "CPF", "TELEFONE", "EMAIL"};
+    int[] larguras = new int[cabecalhos.length];
+    
+    // Inicia as larguras com o tamanho dos próprios títulos
+    for (int i = 0; i < cabecalhos.length; i++) {
+        larguras[i] = cabecalhos[i].length();
     }
+
+    // Passa pelos dados para encontrar o maior valor para cada coluna
+    for (Cliente cliente : clientes) {
+        larguras[0] = Math.max(larguras[0], String.valueOf(cliente.getId()).length());
+        larguras[1] = Math.max(larguras[1], cliente.getNomeCompleto().length());
+        larguras[2] = Math.max(larguras[2], cliente.getCpf().length());
+        larguras[3] = Math.max(larguras[3], cliente.getTelefone().length());
+        larguras[4] = Math.max(larguras[4], cliente.getEmail().length());
+    }
+    
+    // PASSO 2: IMPRIMIR A TABELA
+    imprimirLinhaSeparadora(larguras);
+    imprimirCabecalho(cabecalhos, larguras);
+    imprimirLinhaSeparadora(larguras);
+
+    // Imprime as linhas de dados
+    for (Cliente cliente : clientes) {
+        System.out.printf("| %-" + larguras[0] + "s | %-" + larguras[1] + "s | %-" + larguras[2] + "s | %-" + larguras[3] + "s | %-" + larguras[4] + "s |\n",
+            cliente.getId(),
+            cliente.getNomeCompleto(),
+            cliente.getCpf(),
+            cliente.getTelefone(),
+            cliente.getEmail()
+        );
+    }
+    imprimirLinhaSeparadora(larguras);
+}
 
     private static void cadastrarVeiculoUI() {
         System.out.println("\n--- Cadastro de Novo Veículo ---");
@@ -116,18 +148,67 @@ public class OficinaMasterApplication {
 
     private static void listarOrdemDeServicoUI() {
         System.out.println("\n--- Relatório de Ordens de Serviço ---");
-        List<OrdemDeServico> todasAsOS = osService.listarTodas();
+    List<OrdemDeServico> todasAsOS = osService.listarTodas();
 
-        if (todasAsOS.isEmpty()) {
-            System.out.println("Nenhuma Ordem de Serviço cadastrada.");
-            return;
+    if (todasAsOS.isEmpty()) {
+        System.out.println("Nenhuma Ordem de Serviço cadastrada.");
+        return;
+    }
+
+    // PASSO 1: CALCULAR LARGURAS
+    String[] cabecalhos = {"OS ID", "CLIENTE", "VEÍCULO", "PLACA", "STATUS", "DATA ABERTURA"};
+    int[] larguras = new int[cabecalhos.length];
+
+    for (int i = 0; i < cabecalhos.length; i++) {
+        larguras[i] = cabecalhos[i].length();
+    }
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+    for (OrdemDeServico os : todasAsOS) {
+        larguras[0] = Math.max(larguras[0], String.valueOf(os.getId()).length());
+        larguras[1] = Math.max(larguras[1], os.getVeiculo().getProprietario().getNomeCompleto().length());
+        larguras[2] = Math.max(larguras[2], os.getVeiculo().getModelo().length());
+        larguras[3] = Math.max(larguras[3], os.getVeiculo().getPlaca().length());
+        larguras[4] = Math.max(larguras[4], os.getStatus().toString().length());
+        larguras[5] = Math.max(larguras[5], os.getDataAbertura().format(formatter).length());
+    }
+
+    // PASSO 2: IMPRIMIR A TABELA
+    imprimirLinhaSeparadora(larguras);
+    imprimirCabecalho(cabecalhos, larguras);
+    imprimirLinhaSeparadora(larguras);
+
+    // Imprime as linhas de dados
+    for (OrdemDeServico os : todasAsOS) {
+        System.out.printf("| %-" + larguras[0] + "s | %-" + larguras[1] + "s | %-" + larguras[2] + "s | %-" + larguras[3] + "s | %-" + larguras[4] + "s | %-" + larguras[5] + "s |\n",
+            os.getId(),
+            os.getVeiculo().getProprietario().getNomeCompleto(),
+            os.getVeiculo().getModelo(),
+            os.getVeiculo().getPlaca(),
+            os.getStatus(),
+            os.getDataAbertura().format(formatter)
+        );
+    }
+    imprimirLinhaSeparadora(larguras);
+}
+
+    @SuppressWarnings("unused")
+    private static void imprimirTabela(String[] cabecalhos, int[] larguras, List<Cliente> clientes, List<OrdemDeServico> ordensDeServico) {
+        // Implemente a lógica de impressão de tabela conforme necessário
+    }
+
+    private static void imprimirLinhaSeparadora(int[] larguras) {
+        for (int largura : larguras) {
+            System.out.print("+-" + "-".repeat(largura) + "-");
         }
-        for (OrdemDeServico os : todasAsOS) {
-            System.out.println("--------------------");
-            System.out.println("OS ID: " + os.getId() + " | Status: " + os.getStatus());
-            System.out.println("Cliente: " + os.getVeiculo().getProprietario().getNomeCompleto());
-            System.out.println("Veículo: " + os.getVeiculo().getModelo() + " | Placa: " + os.getVeiculo().getPlaca());
-            System.out.println("Problema Relatado: " + os.getProblemaRelatadoCliente());
+        System.out.println("+");
+    }
+
+    private static void imprimirCabecalho(String[] cabecalhos, int[] larguras) {
+        for (int i = 0; i < cabecalhos.length; i++) {
+            System.out.printf("| %-" + larguras[i] + "s ", cabecalhos[i]);
         }
+        System.out.println("|");
     }
 }
